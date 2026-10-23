@@ -1,0 +1,101 @@
+openapi: 3.0.3
+info:
+  title: Clientes API
+  version: 1.0.0
+  description: CRUD de clientes para el laboratorio de API Gateway
+paths:
+  /clientes:
+    get:
+      summary: Listar clientes
+      responses:
+        "200":
+          description: Lista de clientes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Cliente"
+    post:
+      summary: Crear cliente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClienteRequest"
+      responses:
+        "201":
+          description: Cliente creado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cliente"
+  /clientes/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+    get:
+      summary: Obtener cliente por id
+      responses:
+        "200":
+          description: Cliente encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cliente"
+        "404":
+          description: No existe
+    put:
+      summary: Actualizar cliente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClienteRequest"
+      responses:
+        "200":
+          description: Cliente actualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cliente"
+        "404":
+          description: No existe
+    delete:
+      summary: Eliminar cliente
+      responses:
+        "204":
+          description: Eliminado
+        "404":
+          description: No existe
+components:
+  schemas:
+    ClienteRequest:
+      type: object
+      required: [nombre, email]
+      properties:
+        nombre:
+          type: string
+          example: Ana Torres
+        email:
+          type: string
+          example: ana@correo.com
+    Cliente:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        nombre:
+          type: string
+          example: Ana Torres
+        email:
+          type: string
+          example: ana@correo.com
