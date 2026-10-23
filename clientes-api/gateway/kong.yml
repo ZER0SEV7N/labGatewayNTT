@@ -1,0 +1,56 @@
+_format_version: "3.0"
+
+services:
+  # API de negocio (protegida)
+  - name: clientes-service
+    url: http://clientes-api:8080
+    routes:
+      - name: clientes-route
+        paths:
+          - /api/v1
+        strip_path: true
+    plugins:
+      - name: key-auth
+        config:
+          key_names:
+            - Ocp-Apim-Subscription-Key
+          hide_credentials: true
+      - name: rate-limiting
+        config:
+          minute: 5
+          policy: local
+      - name: correlation-id
+        config:
+          header_name: X-Correlation-ID
+          generator: uuid
+          echo_downstream: true
+      - name: response-transformer
+        config:
+          add:
+            headers:
+              - "X-Gateway:kong-lab"
+
+  # Contrato público (sin key), como un Developer Portal
+  - name: contrato-service
+    url: http://clientes-api:8080/q/openapi
+    routes:
+      - name: contrato-route
+        paths:
+          - /contrato
+        strip_path: true
+
+consumers:
+  # Producto "Básico": usa el límite del servicio (5/min)
+  - username: app-movil
+    keyauth_credentials:
+      - key: movil-key-123
+
+  # Producto "Premium": su propio límite (20/min)
+  - username: app-web
+    keyauth_credentials:
+      - key: web-key-456
+    plugins:
+      - name: rate-limiting
+        config:
+          minute: 20
+          policy: local
