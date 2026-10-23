@@ -26,7 +26,7 @@ paths:
               $ref: "#/components/schemas/ClienteRequest"
       responses:
         "201":
-          description: Cliente creado
+          description: Cliente.java creado
           content:
             application/json:
               schema:
@@ -43,7 +43,7 @@ paths:
       summary: Obtener cliente por id
       responses:
         "200":
-          description: Cliente encontrado
+          description: Cliente.java encontrado
           content:
             application/json:
               schema:
@@ -60,7 +60,7 @@ paths:
               $ref: "#/components/schemas/ClienteRequest"
       responses:
         "200":
-          description: Cliente actualizado
+          description: Cliente.java actualizado
           content:
             application/json:
               schema:
