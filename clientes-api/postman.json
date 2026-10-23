@@ -1,0 +1,67 @@
+{
+  "info": {
+    "name": "Lab API Gateway - Clientes",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "subscriptionKey", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "1. Listar clientes",
+      "request": {
+        "method": "GET",
+        "header": [ { "key": "Ocp-Apim-Subscription-Key", "value": "{{subscriptionKey}}" } ],
+        "url": "{{baseUrl}}/clientes"
+      }
+    },
+    {
+      "name": "2. Crear cliente",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Ocp-Apim-Subscription-Key", "value": "{{subscriptionKey}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"María Quispe\",\n  \"email\": \"maria@correo.com\"\n}"
+        },
+        "url": "{{baseUrl}}/clientes"
+      }
+    },
+    {
+      "name": "3. Obtener cliente",
+      "request": {
+        "method": "GET",
+        "header": [ { "key": "Ocp-Apim-Subscription-Key", "value": "{{subscriptionKey}}" } ],
+        "url": "{{baseUrl}}/clientes/1"
+      }
+    },
+    {
+      "name": "4. Actualizar cliente",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Ocp-Apim-Subscription-Key", "value": "{{subscriptionKey}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Ana Torres Vega\",\n  \"email\": \"ana.vega@correo.com\"\n}"
+        },
+        "url": "{{baseUrl}}/clientes/1"
+      }
+    },
+    {
+      "name": "5. Eliminar cliente",
+      "request": {
+        "method": "DELETE",
+        "header": [ { "key": "Ocp-Apim-Subscription-Key", "value": "{{subscriptionKey}}" } ],
+        "url": "{{baseUrl}}/clientes/2"
+      }
+    }
+  ]
+}
+
