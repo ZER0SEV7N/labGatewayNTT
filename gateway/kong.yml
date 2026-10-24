@@ -1,7 +1,7 @@
 _format_version: "3.0"
 
 services:
-  # API de negocio (protegida)
+  # API de Clientes (del laboratorio, sin cambios)
   - name: clientes-service
     url: http://clientes-api:8080
     routes:
@@ -30,7 +30,7 @@ services:
             headers:
               - "X-Gateway:kong-lab"
 
-  # Contrato público (sin key), como un Developer Portal
+  # Contrato público (del laboratorio, sin cambios)
   - name: contrato-service
     url: http://clientes-api:8080/q/openapi
     routes:
@@ -39,16 +39,61 @@ services:
           - /contrato
         strip_path: true
 
+  # NUEVO: API de Cuentas, solo para el producto Premium
+  - name: cuentas-service
+    url: http://cuentas-api:8080/cuentas
+    routes:
+      - name: cuentas-route
+        paths:
+          - /api/v1/cuentas
+        strip_path: true
+    plugins:
+      - name: key-auth
+        config:
+          key_names:
+            - Ocp-Apim-Subscription-Key
+          hide_credentials: true
+      - name: acl
+        config:
+          allow:
+            - premium
+          hide_groups_header: true
+      - name: proxy-cache
+        config:
+          strategy: memory
+          cache_ttl: 30
+          request_method:
+            - GET
+          response_code:
+            - 200
+          content_type:
+            - application/json
+            - application/json; charset=UTF-8
+      - name: correlation-id
+        config:
+          header_name: X-Correlation-ID
+          generator: uuid
+          echo_downstream: true
+      - name: response-transformer
+        config:
+          add:
+            headers:
+              - "X-Gateway:kong-lab"
+
 consumers:
-  # Producto "Básico": usa el límite del servicio (5/min)
+  # Producto Básico: solo Clientes, 5 llamadas/min
   - username: app-movil
     keyauth_credentials:
       - key: movil-key-123
+    acls:
+      - group: basico
 
-  # Producto "Premium": su propio límite (20/min)
+  # Producto Premium: Clientes + Cuentas, 20 llamadas/min
   - username: app-web
     keyauth_credentials:
       - key: web-key-456
+    acls:
+      - group: premium
     plugins:
       - name: rate-limiting
         config:
