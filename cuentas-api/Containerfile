@@ -1,0 +1,5 @@
+FROM docker.io/library/eclipse-temurin:21-jre
+WORKDIR /app
+COPY target/quarkus-app/ /app/
+EXPOSE 8080
+CMD ["java", "-jar", "/app/quarkus-run.jar"]
